@@ -3,9 +3,9 @@ import configargparse
 import os
 import numpy as np
 import random
-from GeoNLF.geo_optimizer import Geo_optimizer
+from geonlf.geo_optimizer import Geo_optimizer
     
-from GeoNLF.trainer import Trainer
+from geonlf.trainer import Trainer
 from utils.metrics import (
     RaydropMeter,
     IntensityMeter,

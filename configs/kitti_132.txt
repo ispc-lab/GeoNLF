@@ -1,9 +1,0 @@
-alpha_d = 1000
-alpha_r = 1
-alpha_i = 10
-desired_resolution = 32768
-num_steps = 768
-upsample_steps = 64
-bound = 1
-offset = [877.870663344022, 3716.690969665799, 107.39034223023673]
-scale = 0.009124495981851671
