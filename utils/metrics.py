@@ -6,7 +6,7 @@ from skimage.metrics import structural_similarity
 
 from utils.chamfer3D.dist_chamfer_3D import chamfer_3DDist
 from utils.convert import pano_to_lidar
-from utils.SIM3.sim3 import align_ate_c2b_use_a2b, compute_ate
+from utils.sim3.sim3 import align_ate_c2b_use_a2b, compute_ate
 
 def fscore(dist1, dist2, threshold=0.001):
     """
