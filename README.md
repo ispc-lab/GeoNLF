@@ -1,5 +1,5 @@
 <div align="center">
-<h1><img src="https://github.com/ispc-lab/LiDAR4D/assets/51731102/7f3dd959-9b97-481e-8c13-45abbc2b712d" width=25%></h1>
+
 
 <h3>GeoNLF: Geometry guided Pose-Free Neural LiDAR Fields</h3>  
 
