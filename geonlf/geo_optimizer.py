@@ -4,7 +4,7 @@ import torch
 import tqdm
 from utils.chamfer3D.dist_chamfer_3D import chamfer_3DDist
 from utils.convert import pano_to_lidar
-from utils.recorder import recoder
+from utils.recorder import recorder
 
 class Geo_optimizer():
     """
@@ -21,7 +21,7 @@ class Geo_optimizer():
         self.fp16 = opt.fp16
         self.scaler = torch.cuda.amp.GradScaler(enabled=self.fp16)
         self.get_all_pcds()
-        self.recoder=recoder(model)
+        self.recorder=recorder(model)
         self.chamLoss = chamfer_3DDist() 
 
     def downsample(self,pcd):
@@ -130,7 +130,7 @@ class Geo_optimizer():
 
         self.scaler.step(self.optimizer_graph_rot)
         self.scaler.update()
-        self.recoder.cal_pose_error_when_graph_optim(self.loader)  
+        self.recorder.cal_pose_error_when_graph_optim(self.loader)  
         return l   
 
     def geo_optimize(self,epoch,lr_trans,lr_rot):
@@ -161,7 +161,7 @@ class Geo_optimizer():
                 pbar.set_description(f"loss={loss} ({total_loss/local_step:.4f})")
                 pbar.update(1)
                  
-            self.recoder.save_train_pose(self.loader)
+            self.recorder.save_train_pose(self.loader)
         
         if self.opt.graph_optim and bound2>epoch>bound1 and epoch%itv2==0:
             self.optimizer_graph_trans=torch.optim.Adam(self.model.get_params_pose_trans(reweight_graph*4*lr_trans), betas=(0.9, 0.99), eps=1e-15)
@@ -178,7 +178,7 @@ class Geo_optimizer():
                 total_loss+=loss
                 pbar.set_description(f"loss={loss} ({total_loss/local_step:.4f})")
                 pbar.update(self.loader.batch_size) 
-            self.recoder.save_train_pose(self.loader)
+            self.recorder.save_train_pose(self.loader)
 
         if self.opt.graph_optim and bound2<=epoch<=bound3 and epoch%itv3==0: 
             self.optimizer_graph_trans=torch.optim.Adam(self.model.get_params_pose_trans(reweight_graph*2*lr_trans), betas=(0.9, 0.99), eps=1e-15)
@@ -195,5 +195,5 @@ class Geo_optimizer():
                 total_loss+=loss
                 pbar.set_description(f"loss={loss:.4f} ({total_loss/local_step:.4f})")
                 pbar.update(self.loader.batch_size) 
-            self.recoder.save_train_pose(self.loader)
+            self.recorder.save_train_pose(self.loader)
         

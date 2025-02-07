@@ -191,7 +191,7 @@ def set_opt_device_dataset_model():
 
 
     # specify model
-    from GeoNLF.network_tcnn import NeRFNetwork
+    from geonlf.network_tcnn import NeRFNetwork
     model = NeRFNetwork(
         opt,
         device=device,
@@ -400,15 +400,12 @@ def train_mode(opt,device,NeRFDataset,model,criterion):
     max_epoch = np.ceil(opt.iters / len(train_loader)).astype(np.int32)
     print(f"max_epoch: {max_epoch}")
     trainer.train(train_loader,test_loader,max_epoch)
-    #trainer.recoder.save_train_pose(test_loader)
+    #trainer.recorder.save_train_pose(test_loader)
     trainer.test(test_loader) 
-    #trainer.save_mesh(resolution=128, threshold=10)
+
 def main():
-    #这个函数就是根据parser来确定device这些量的
     opt,device,NeRFDataset,model=set_opt_device_dataset_model()
-    #根据parser来确定损失函数
     criterion=set_loss(opt)
-    #如果是测试/评估模式
     if opt.test or opt.test_eval:
         test_mode(opt,device,NeRFDataset,model,criterion)
     else:

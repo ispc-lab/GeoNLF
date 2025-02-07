@@ -7,7 +7,7 @@ import tqdm
 from torch.utils.data import DataLoader
 from dataclasses import dataclass, field
 
-from GeoNLF.dataset.base_dataset import get_lidar_rays, BaseDataset
+from geonlf.dataset.base_dataset import BaseDataset
 
 
 @dataclass

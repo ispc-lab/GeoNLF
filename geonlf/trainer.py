@@ -27,7 +27,7 @@ from utils.chamfer3D.dist_chamfer_3D import chamfer_3DDist
 from utils.metrics import fscore
 from data.dataset.base_dataset import custom_meshgrid
 from utils.convert import pano_to_lidar
-from utils.recorder import recoder
+from utils.recorder import recorder
 
 def is_ali_cluster():
     import socket
@@ -107,7 +107,7 @@ class Trainer(object):
         
         model.to(self.device)
         self.geo_optimizer=Geo_optimizer(opt,loader,model)
-        self.recoder=recoder(model)
+        self.recorder=recorder(model)
         if self.world_size > 1:
             model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
             model = torch.nn.parallel.DistributedDataParallel(
@@ -573,7 +573,7 @@ class Trainer(object):
                 self.evaluate_one_epoch(test_loader)
                 self.save_checkpoint(full=False, best=True)
             if self.epoch%5==0 or self.epoch==1:
-                self.recoder.save_train_pose(train_loader)
+                self.recorder.save_train_pose(train_loader)
             #self.geo_optimize(train_loader)
 
  
@@ -712,7 +712,7 @@ class Trainer(object):
 
         for data in loader:
             if self.epoch==1:
-                self.recoder.cal_pose_error(data)
+                self.recorder.cal_pose_error(data)
             self.local_step += 1
             self.global_step += 1
 
@@ -788,7 +788,7 @@ class Trainer(object):
                     self.lr_scheduler_pose_trans.step()
 
             loss_val = loss.item()
-            self.recoder.cal_pose_error(data)
+            self.recorder.cal_pose_error(data)
             self.model.loss_record[data["index"]].append(loss_val)
             total_loss += loss_val
 
