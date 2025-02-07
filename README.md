@@ -10,7 +10,6 @@
 
 This repository is the official PyTorch implementation for GeoNLF.
 
-<img src="https://github.com/ispc-lab/LiDAR4D/assets/51731102/e23640bf-bd92-4ee0-88b4-375faf8c9b4d" width=50%>
 </div>
 
 <!-- TABLE OF CONTENTS -->
