@@ -9,7 +9,7 @@ import torch
 # to the GT poses, the final offset is expected to be small. Therefore, directly calculating the error between 
 # the predicted pose and GT pose for each frame is still of some reference value. 
 
-class recoder():
+class recorder():
     def __init__(self,model):
         self.model=model
         
