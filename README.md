@@ -7,8 +7,8 @@ Weiyi Xue*, [Zehan Zheng*](https://dyfcalid.github.io/), [Fan Lu](https://fanlu9
 
 This repository is the official PyTorch implementation for GeoNLF.
 
-<h1><img src="https://github.com/ispc-lab/GeoNLF/assets/fig1" width=90%></h1>
-<h1><img src="https://github.com/ispc-lab/GeoNLF/assets/fig2" width=90%></h1>
+<h1><img src="https://github.com/ispc-lab/GeoNLF/tree/main/assets/fig1.png" width=90%></h1>
+<h1><img src="https://github.com/ispc-lab/GeoNLF/tree/main/assets/fig2.png" width=90%></h1>
 </div>
 
 <!-- TABLE OF CONTENTS -->
