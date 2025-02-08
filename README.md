@@ -2,15 +2,23 @@
 <h3>GeoNLF: Geometry guided Pose-Free Neural LiDAR Fields</h3>  
 
 Weiyi Xue*, [Zehan Zheng*](https://dyfcalid.github.io/), [Fan Lu](https://fanlu97.github.io/), Haiyun Wei,  [Guang Chen](https://ispc-group.github.io/)†, Changjun Jiang  († Corresponding author)  
+
 **NeurIPS 2024**
+
 **[Paper (arXiv)](https://arxiv.org/abs/2407.05597) | [Paper (NeurIPS)](https://papers.nips.cc/paper_files/paper/2024/hash/86ab6927ee4ae9bde4247793c46797c7-Abstract-Conference.html) | [Poster](https://neurips.cc/media/PosterPDFs/NeurIPS%202024/93231.png?t=1733402073.7734404) **  
 
 This repository is the official PyTorch implementation for GeoNLF.
 
-<img src="https://raw.githubusercontent.com/ispc-lab/GeoNLF/refs/heads/main/assets/fig1.png" width=90%>
-<img src="https://github.com/ispc-lab/GeoNLF/blob/main/assets/fig2.png?raw=true" width=90%>
-</div>
 
+<img src="https://raw.githubusercontent.com/ispc-lab/GeoNLF/refs/heads/main/assets/fig1.png" width=90%>
+
+NVS Results
+
+<img src="https://github.com/ispc-lab/GeoNLF/blob/main/assets/fig2.png?raw=true" width=90%>
+
+Registration Results
+
+</div>
 <!-- TABLE OF CONTENTS -->
 <details open="open" style='padding: 10px; border-radius:5px 30px 30px 5px; border-style: solid; border-width: 1px;'>
   <summary>Table of Contents</summary>
