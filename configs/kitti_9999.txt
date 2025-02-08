@@ -1,0 +1,11 @@
+alpha_d = 1000
+alpha_r = 1
+alpha_i = 10
+desired_resolution = 32768
+num_steps = 768
+upsample_steps = 64
+bound = 1
+eval_interval = 50
+iters = 62000
+offset = [888.9709508252489, 3253.283070982545, 104.93560670170301]
+scale = 0.010370573195625956

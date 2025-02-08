@@ -47,7 +47,6 @@ class Trainer(object):
         optimizer=None,  # optimizer
         optimizer_pose_rot=None,
         optimizer_pose_trans=None,
-        ema_decay=None,  # if use EMA, set the decay
         lr_scheduler=None,  # scheduler
         lr_scheduler_pose_rot=None,
         lr_scheduler_pose_trans=None,
@@ -79,7 +78,6 @@ class Trainer(object):
         self.local_rank = local_rank
         self.world_size = world_size
         self.workspace = workspace
-        self.ema_decay = ema_decay
         self.fp16 = fp16
         self.best_mode = best_mode
         self.use_loss_as_metric = use_loss_as_metric
@@ -138,14 +136,6 @@ class Trainer(object):
             self.lr_scheduler_pose_rot=lr_scheduler_pose_rot(self.optimizer_pose_rot)
             self.lr_scheduler_pose_trans=lr_scheduler_pose_trans(self.optimizer_pose_trans)
 
-        if ema_decay is not None:
-            #self.ema = ExponentialMovingAverage(
-                #self.model.parameters(), decay=ema_decay
-            #)
-            self.ema=None
-        else:
-            self.ema = None
-
         self.scaler = torch.cuda.amp.GradScaler(enabled=self.fp16)
 
         # variable init
@@ -155,8 +145,8 @@ class Trainer(object):
         self.stats = {
             "loss": [],
             "valid_loss": [],
-            "results": [],  # metrics[0], or valid_loss
-            "checkpoints": [],  # record path of saved ckpt, to automatically remove old ckpt
+            "results": [],  
+            "checkpoints": [],  
             "best_result": None,
         }
 
@@ -222,7 +212,7 @@ class Trainer(object):
             "epoch": self.epoch,
             "global_step": self.global_step,
             "stats": self.stats,
-            "it": self.it,#其实跟global step一样，当时没看到，有点多此一举了
+            "it": self.it,
         }
 
         if full:
@@ -233,8 +223,6 @@ class Trainer(object):
             state["lr_scheduler_pose_rot"]=self.lr_scheduler_pose_rot.state_dict()
             state["lr_scheduler_pose_trans"]=self.lr_scheduler_pose_trans.state_dict()
             state["scaler"] = self.scaler.state_dict()
-            if self.ema is not None:
-                state["ema"] = self.ema.state_dict()
         
         if not best:
             state["model"] = self.model.state_dict()
@@ -262,19 +250,11 @@ class Trainer(object):
                     )
                     self.stats["best_result"] = self.stats["results"][-1]
 
-                    # save ema results
-                    if self.ema is not None:
-                        self.ema.store()
-                        self.ema.copy_to()
-
                     state["model"] = self.model.state_dict()
 
                     # we don't consider continued training from the best ckpt, so we discard the unneeded density_grid to save some storage (especially important for dnerf)
                     if "density_grid" in state["model"]:
                         del state["model"]["density_grid"]
-
-                    if self.ema is not None:
-                        self.ema.restore()
 
                     torch.save(state, self.best_path)
             else:
@@ -308,8 +288,6 @@ class Trainer(object):
         if len(unexpected_keys) > 0:
             self.log(f"[WARN] unexpected keys: {unexpected_keys}")
 
-        if self.ema is not None and "ema" in checkpoint_dict:
-            self.ema.load_state_dict(checkpoint_dict["ema"])
 
         if model_only:
             return
@@ -354,19 +332,16 @@ class Trainer(object):
         geo_flag=False
 
         if isinstance(self.opt.patch_size_lidar, int):
-            #非patch采样,采样1个pixcel
             patch_size_x, patch_size_y = (
                 self.opt.patch_size_lidar,
                 self.opt.patch_size_lidar,
             )
         elif len(self.opt.patch_size_lidar) == 1:
-            #不会经过这儿
             patch_size_x, patch_size_y = (
                 self.opt.patch_size_lidar[0],
                 self.opt.patch_size_lidar[0],
             )
         else:
-            #patch采样
             patch_size_x, patch_size_y = self.opt.patch_size_lidar
             geo_flag=True
 
@@ -600,16 +575,10 @@ class Trainer(object):
         )
         self.model.eval()
 
-        # if write_video:
-        #     all_preds = []
-        #     all_preds_depth = []
-
         with torch.no_grad():
             for i, data in enumerate(loader):
                 with torch.cuda.amp.autocast(enabled=self.fp16):
-                    #_=self.test_step(data)
                     preds_raydrop, preds_intensity, preds_depth = self.test_step(data)
-                #'''
                 pred_raydrop = preds_raydrop[0].detach().cpu().numpy()
                 pred_raydrop = (np.where(pred_raydrop > 0.5, 1.0, 0.0)).reshape(
                     loader._data.H_lidar, loader._data.W_lidar
@@ -632,10 +601,6 @@ class Trainer(object):
                 pred_depth = (pred_depth * 255).astype(np.uint8)
                 # pred_depth = (pred_depth / self.opt.scale).astype(np.uint8)
 
-                # if write_video:
-                #     all_preds.append(cv2.cvtColor(cv2.applyColorMap(pred_intensity, 1), cv2.COLOR_BGR2RGB))
-                #     all_preds_depth.append(cv2.cvtColor(cv2.applyColorMap(pred_depth, 20), cv2.COLOR_BGR2RGB))
-                # else:
                 cv2.imwrite(
                     os.path.join(save_path, f"test_{name}_{i:04d}_raydrop.png"),
                     pred_raydrop,
@@ -652,28 +617,8 @@ class Trainer(object):
                 )
 
                 pbar.update(loader.batch_size)
-                #'''
-        #'''
-        # if write_video:
-        #     all_preds = np.stack(all_preds, axis=0)
-        #     all_preds_depth = np.stack(all_preds_depth, axis=0)
-        #     imageio.mimwrite(
-        #         os.path.join(save_path, f"{name}_lidar_rgb.mp4"),
-        #         all_preds,
-        #         fps=25,
-        #         quality=8,
-        #         macro_block_size=1,
-        #     )
-        #     imageio.mimwrite(
-        #         os.path.join(save_path, f"{name}_depth.mp4"),
-        #         all_preds_depth,
-        #         fps=25,
-        #         quality=8,
-        #         macro_block_size=1,
-        #     )
-
         self.log(f"==> Finished Test.")
-        #'''
+
     def train_one_epoch(self, loader):
         self.optimizer.param_groups[0]['params'][0].requires_grad=True
         self.optimizer.param_groups[1]['params'][0].requires_grad=True
@@ -708,7 +653,6 @@ class Trainer(object):
         self.local_step = 0
         
         idx_test=[8,20,32]
-        # idx_test=list(range(100))
 
         for data in loader:
             if self.epoch==1:
@@ -736,7 +680,7 @@ class Trainer(object):
             # the test frame can't contribute to the network, but we optimize their pose
             
             if data["index"] in idx_test:
-                # compared to 768, the network can't be optimized because we set the learning rate=0
+                # compared to L768, the network can't be optimized because we set the learning rate=0
                 # in this way, we can simply just optimize pose as iNeRF.
                 # print(self.optimizer.param_groups[0]) 
                 self.optimizer.param_groups[0]['lr']=0
@@ -767,8 +711,6 @@ class Trainer(object):
 
 
             self.scaler.step(self.optimizer)
-            # if data["index"] in idx_test:
-            #     print(self.optimizer.param_groups[0])
             self.optimizer.param_groups[0]['lr']=current_lr_network
             self.optimizer.param_groups[1]['lr']=current_lr_network
             self.optimizer.param_groups[2]['lr']=current_lr_network

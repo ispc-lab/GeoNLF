@@ -167,9 +167,11 @@ def set_opt_device_dataset_model():
 
     # specify dataloader size
     if opt.dataloader=="kitti360":
-        opt.dataloader_size=36
+        opt.dataloader_size=24
+        opt.path='./data/kitti360'
     elif opt.dataloader=="nuscenes":
         opt.dataloader_size=36
+        opt.path='./data/nuscenes'
     else:
         raise RuntimeError("Please specify the dataset")
 
@@ -384,7 +386,6 @@ def train_mode(opt,device,NeRFDataset,model,criterion):
         optimizer_pose_rot=optimizer_pose_rot,
         optimizer_pose_trans=optimizer_pose_trans,
         criterion=criterion,
-        ema_decay=0.95,
         fp16=opt.fp16,
         lr_scheduler=scheduler,
         lr_scheduler_pose_rot=scheduler_pose_rot,

@@ -11,7 +11,7 @@ class Geo_optimizer():
     npoints: all point clouds are downsampled to n points
     n_connected: each frame has 2*n_connected edges, except for the first and last n_connected frames.
     """
-    def __init__(self,opt,loader,model,npoints=24000,n_connectd=2):
+    def __init__(self,opt,loader,model,npoints=12000,n_connectd=2):
         self.opt = opt
         self.loader = loader
         self.model=model
@@ -137,13 +137,17 @@ class Geo_optimizer():
         if self.opt.no_gt_pose:
             itv1,itv2,itv3=6,10,25
             ep1,ep2,ep3=75,20,20
-            reweight_graph=10
+            reweight_graph=0.5
             bound1,bound2,bound3=151,650,1300
         else:
             itv1,itv2,itv3=1,1,1 
             ep1,ep2,ep3=10,5,1
             bound1,bound2,bound3=100,350,900
             reweight_graph=3
+            if self.opt.dataloader == 'kitti360':
+                bound1,bound2,bound3=100,350,900
+                # KITTI360 has denser points due to its relatively small FoV, resulting in a smaller CD.
+                reweight_graph=4.5
  
         if self.opt.graph_optim and epoch<=bound1 and epoch%itv1==0:
             self.optimizer_graph_trans=torch.optim.Adam(self.model.get_params_pose_trans(reweight_graph*8*lr_trans), betas=(0.9, 0.99), eps=1e-15)

@@ -6,7 +6,9 @@ Weiyi Xue*, [Zehan Zheng*](https://dyfcalid.github.io/), [Fan Lu](https://fanlu9
 **[Paper (arXiv)](https://arxiv.org/abs/2407.05597) | [Paper (NeurIPS)](https://papers.nips.cc/paper_files/paper/2024/hash/86ab6927ee4ae9bde4247793c46797c7-Abstract-Conference.html) | [Poster](https://neurips.cc/media/PosterPDFs/NeurIPS%202024/93231.png?t=1733402073.7734404) **  
 
 This repository is the official PyTorch implementation for GeoNLF.
+
 <h1><img src="https://github.com/ispc-lab/GeoNLF/assets/fig1" width=90%></h1>
+<h1><img src="https://github.com/ispc-lab/GeoNLF/assets/fig2" width=90%></h1>
 </div>
 
 <!-- TABLE OF CONTENTS -->
@@ -99,7 +101,7 @@ data
         └──...
 ```
 ##
-Next, for nuscenes-mini dataset, run nuscenes dataset preprocessing: (--start seq_id --samples)
+Next, for Nuscenes-mini dataset, run nuscenes dataset preprocessing: (--start seq_id --samples)
 ```bash
 cd data/preprocess_nus
 python generate_train_rangeview.py --start 0 --samples
@@ -125,7 +127,7 @@ Then obtain the scale and offset of this sequence by running cal_centerpose_boun
 
 For Nuscenes:
 ```bash
-cd data/preprocess_kitti
+cd data/preprocess_nus
 python cal_centerpose_bound.py --start 0 --samples
 # python cal_centerpose_bound.py --start 0 
 # python cal_centerpose_bound.py --start 0 --high_freq
@@ -159,7 +161,7 @@ GeoNLF
 Run the following command:
 ```bash
 # Nuscenes
-python main_lidarnerf.py --workspace mytest --config configs/nus_samples_0.txt --start 79 --rot --trans --noise_rot --noise_trans --graph_optim --dataloader nuscenes --geo_loss --reweight
+python main_lidarnerf.py --workspace mytest --config configs/nus_samples_0.txt --start 0 --rot --trans --noise_rot --noise_trans --dataloader nuscenes --geo_loss --reweight --graph_optim
 # KITTI-360
 python main_lidarnerf.py --workspace mytest --config configs/kitti_9999.txt --start 9999 --rot --trans --noise_rot --noise_trans --graph_optim --dataloader kitti360 --geo_loss --reweight
 ```

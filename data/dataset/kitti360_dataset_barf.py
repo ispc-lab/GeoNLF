@@ -7,7 +7,7 @@ import tqdm
 from torch.utils.data import DataLoader
 from dataclasses import dataclass, field
 
-from geonlf.dataset.base_dataset import BaseDataset
+from data.dataset.base_dataset import BaseDataset
 
 
 @dataclass
