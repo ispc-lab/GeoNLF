@@ -145,7 +145,6 @@ class Geo_optimizer():
             bound1,bound2,bound3=100,350,900
             reweight_graph=3
             if self.opt.dataloader == 'kitti360':
-                bound1,bound2,bound3=100,350,900
                 # KITTI360 has denser points due to its relatively small FoV, resulting in a smaller CD.
                 reweight_graph=4.5
  
@@ -153,7 +152,7 @@ class Geo_optimizer():
             self.optimizer_graph_trans=torch.optim.Adam(self.model.get_params_pose_trans(reweight_graph*8*lr_trans), betas=(0.9, 0.99), eps=1e-15)
             self.optimizer_graph_rot=torch.optim.Adam(self.model.get_params_pose_rot(reweight_graph*5*lr_rot), betas=(0.9, 0.99), eps=1e-15)
             pbar = tqdm.tqdm(
-                total=10,
+                total=ep1,
                 bar_format="{desc}: {percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]",
             )       
             total_loss=0
@@ -171,7 +170,7 @@ class Geo_optimizer():
             self.optimizer_graph_trans=torch.optim.Adam(self.model.get_params_pose_trans(reweight_graph*4*lr_trans), betas=(0.9, 0.99), eps=1e-15)
             self.optimizer_graph_rot=torch.optim.Adam(self.model.get_params_pose_rot(reweight_graph*2*lr_rot), betas=(0.9, 0.99), eps=1e-15)
             pbar = tqdm.tqdm(
-                total=5,
+                total=ep2,
                 bar_format="{percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]",
             )       
             total_loss=0
@@ -188,7 +187,7 @@ class Geo_optimizer():
             self.optimizer_graph_trans=torch.optim.Adam(self.model.get_params_pose_trans(reweight_graph*2*lr_trans), betas=(0.9, 0.99), eps=1e-15)
             self.optimizer_graph_rot=torch.optim.Adam(self.model.get_params_pose_rot(reweight_graph*1*lr_rot), betas=(0.9, 0.99), eps=1e-15)
             pbar = tqdm.tqdm(
-                total=1,
+                total=ep3,
                 bar_format="{percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]",
             )       
             total_loss=0
