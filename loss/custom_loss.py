@@ -28,3 +28,4 @@ def chamfer_based_norm_loss_low_capacity(keypoints1,keypoints2,idx1,idx2):
     n2=torch.norm(norm2-nearst_norm2,dim=-1)
     n=(n1**2).mean()+(n2**2).mean()
     return n
+
