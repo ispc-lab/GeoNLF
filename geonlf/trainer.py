@@ -652,7 +652,7 @@ class Trainer(object):
 
         self.local_step = 0
         
-        idx_test=[8,20,32]
+        idx_test=[4,12,20]
 
         for data in loader:
             if self.epoch==1:
@@ -828,7 +828,7 @@ class Trainer(object):
                 if self.opt.all_eval:
                     eva_idx=[i for i in range(self.opt.dataloader_size)]
                 else:
-                    eva_idx=[6,18,30]
+                    eva_idx=[4,12,20]
                 if data["index"] in eva_idx:
                     self.local_step += 1
 
